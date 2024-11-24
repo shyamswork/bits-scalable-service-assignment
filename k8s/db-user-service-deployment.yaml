@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-user-service
+  template:
+    metadata:
+      labels:
+        app: db-user-service
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:13
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "user"
+        - name: POSTGRES_PASSWORD
+          value: "password"
+        - name: POSTGRES_DB
+          value: "userdb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-user-service
+spec:
+  selector:
+    app: db-user-service
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

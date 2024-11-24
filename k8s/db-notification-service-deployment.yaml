@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-notification-service
+  template:
+    metadata:
+      labels:
+        app: db-notification-service
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:13
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "user"
+        - name: POSTGRES_PASSWORD
+          value: "password"
+        - name: POSTGRES_DB
+          value: "notificationdb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-notification-service
+spec:
+  selector:
+    app: db-notification-service
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
